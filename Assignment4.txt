@@ -1,0 +1,367 @@
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+namespace Assignment4
+{
+    class Functionalities
+    {
+        int WantToContinue, getEmployeeId,UpdatedAge,age,id;
+        string UpdatedEmployeeMail_id, UpdatedDesignation, UpdatedCompanyName,UpdatedAddress, employeeMail_id, validateField, validateAddress,validate;
+        Employee checkIDExists;
+        public void GetAllEmployee(List<Employee> employees)
+        {
+            if (employees.Count > 0)
+            {
+                foreach (Employee emp in employees)
+                {
+                    Console.WriteLine(" ID = {0}\n Name = {1}\n Age = {2}\n Email ID = {3}\n" +
+                        " Designation = {4}\n Company Name = {5}\n Address = {6}", emp.id,
+                        emp.employeeName, emp.age, emp.employeeMail_id, emp.employeeDesignation, emp.companyName, emp.address);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Employee exists.");
+            }
+        }
+        public void GetEmployeeById(List<Employee> employees)
+        {
+            if (employees.Count > 0)
+            {
+                getEmployeeId = ValidateId();
+                checkIDExists = employees.Find(x => x.id == getEmployeeId);
+                Console.WriteLine(" Name = {0}\n Age = {1}\n Email ID = {2}\n" +
+                        " Designation = {3}\n Company Name = {4}\n Address = {5}",
+                        checkIDExists.employeeName, checkIDExists.age, checkIDExists.employeeMail_id, checkIDExists.employeeDesignation,
+                        checkIDExists.companyName, checkIDExists.address);
+            }
+            else
+            {
+                Console.WriteLine("No Employee exists.");
+            }
+        }
+        public void UpdateEmployeeRecord(List<Employee> employees)
+        {
+            if (employees.Count > 0)
+            {
+                getEmployeeId = ValidateId();
+                checkIDExists = employees.Find(x => x.id == getEmployeeId);
+                Console.WriteLine(checkIDExists);
+                if (checkIDExists != null)
+                {
+                    Console.WriteLine("Press 1 to update Email Id.");
+                    Console.WriteLine("Press 2 to update Age.");
+                    Console.WriteLine("Press 3 to update Designation.");
+                    Console.WriteLine("Press 4 to update Company Name.");
+                    Console.WriteLine("Press 5 to update Address.");
+
+                    Int32.TryParse(Console.ReadLine(), out int choice);
+
+                    do
+                    {
+                        switch (choice)
+                        {
+                            case 1:
+                                Console.WriteLine("Enter the Employee Updated Email Id.");
+                                do
+                                {
+                                    UpdatedEmployeeMail_id = ValidateEmail();
+                                    checkIDExists = employees.Find(x => x.employeeMail_id == UpdatedEmployeeMail_id);
+                                    if (checkIDExists == null)
+                                    {
+                                        checkIDExists.employeeMail_id = UpdatedEmployeeMail_id;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Employee already exists.");
+                                    }
+                                }
+                                while (UpdatedEmployeeMail_id == null);
+
+                                break;
+
+                            case 2:
+                                Console.WriteLine("Enter the Employee Updated Age.");
+                                do
+                                {
+                                    UpdatedAge = ValiateAge();
+                                    checkIDExists.age = UpdatedAge;
+                                }
+                                while (UpdatedAge == 0);
+
+                                break;
+
+                            case 3:
+                                Console.WriteLine("Enter the Employee Updated Designation.");
+                                do
+                                {
+                                    UpdatedDesignation = ValidateField();
+                                    checkIDExists.employeeDesignation = UpdatedDesignation;
+                                }
+                                while (UpdatedDesignation == null);
+                                break;
+
+                            case 4:
+                                Console.WriteLine("Enter the Employee Updated Company Name.");
+                                do
+                                { 
+                                    UpdatedCompanyName = ValidateField();
+                                    checkIDExists.companyName = UpdatedCompanyName;
+                                }
+                                while (UpdatedCompanyName == null);
+                                break;
+
+                            case 5:
+                                Console.WriteLine("Enter the Employee Updated Address.");
+                                do
+                                {
+                                    UpdatedAddress = ValidateField();
+                                    checkIDExists.address = UpdatedAddress;
+                                }
+                                while (UpdatedAddress == null);
+                                break;
+
+                            default:
+                                Console.WriteLine("You have entered wrong Choice.");
+                                break;
+                        }
+                        Console.WriteLine("Press 22 to continue");
+                        Int32.TryParse(Console.ReadLine(), out WantToContinue);
+                    }
+                    while (WantToContinue == 2);
+                }
+                else
+                {
+                    Console.WriteLine("No employee exists with this Id.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No employee exists.");
+            }
+        }
+
+        public void DeteleEmployeeRecord(List<Employee> employees)
+        { 
+            if (employees.Count > 0)
+            {
+                getEmployeeId = ValidateId();
+                checkIDExists = employees.Find(x => x.id == getEmployeeId);
+                employees.Remove(checkIDExists);
+            }
+
+            else
+            {
+                Console.WriteLine("There are no employees.");
+            }
+        }
+
+        public string ValidateEmail()
+        {
+            employeeMail_id = Console.ReadLine();
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            Match match = regex.Match(employeeMail_id);
+            if (match.Success)
+                return employeeMail_id;
+            else
+                Console.WriteLine("Enter the valid Email Id");
+            return null;
+        }
+
+        public int ValiateAge()
+        {
+            Console.WriteLine("Enter the Employee Age");
+            Int32.TryParse(Console.ReadLine(), out age);
+            if (age > 17 && age < 66)
+            { return age; }
+
+            Console.WriteLine("Enter the age between 18-65");
+            return 0;
+        }
+
+        public int ValidateId()
+        {
+            Console.WriteLine("Enter the Employee Id");
+            Int32.TryParse(Console.ReadLine(), out id);
+            if (id > 100)
+            { return id; }
+
+            Console.WriteLine("Enter the valid Id.");
+            return 0;
+        }
+
+        public string ValidateField()
+        {
+            validateField = Console.ReadLine();
+            validate = validateField.Trim();
+            Regex regex = new Regex(@"^[a-zA-Z]+$");
+            Match match = regex.Match(validate);
+            if (match.Success)
+            {
+                return validate;
+            }
+
+            else
+                Console.WriteLine("Enter the field Properly.");
+            return null;
+        }
+
+        public string ValidateAddress()
+        {
+            validateAddress = Console.ReadLine();
+            validate = validateAddress.Trim();
+           
+            if (validate.Length>0)
+            {
+                return validate;
+            }
+
+            else
+                Console.WriteLine("Enter the field Properly.");
+            return null;
+        }
+    }
+}
+---------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Assignment4
+{
+    public class TestClass
+    {
+        public static void Main()
+        {
+            int choice,WantToContinue,id=101, age;
+            string employeeName, employeeMail_id, employeeDesignation, companyName,address;
+            List<Employee> employees = new List<Employee>();
+            Functionalities functionalities = new Functionalities();
+
+            do
+            {
+                Console.WriteLine("Press 1 for create employee.");
+                Console.WriteLine("Press 2 for get all employees detail.");
+                Console.WriteLine("Press 3 for get employee by Id.");
+                Console.WriteLine("Press 4 for update employee details.");
+                Console.WriteLine("Press 5 for delete employee");
+
+                Console.WriteLine("Enter your choice");
+                Int32.TryParse(Console.ReadLine(), out choice);
+                switch (choice)
+                {
+                    case 1:
+                        do
+                        {
+                            Console.WriteLine("Enter the Employee Name");
+                            employeeName= functionalities.ValidateField();
+                        }
+                        while (employeeName == null);
+                        
+                        do
+                        {
+                            Console.WriteLine("Enter the Employee Email Id");
+                            employeeMail_id = functionalities.ValidateEmail();
+                        }
+                        while (employeeMail_id == null);
+                        
+                        do
+                        {
+                            age = functionalities.ValiateAge();
+                        }
+                        while (age == 0);
+                        
+                        do
+                        {
+                            Console.WriteLine("Enter the Employee Designation");
+                            employeeDesignation = functionalities.ValidateField();
+                        }
+                        while (employeeDesignation == null);
+                        
+                        do
+                        {
+                            Console.WriteLine("Enter the Company Name");
+                            companyName = functionalities.ValidateField();
+                        }
+                        while (companyName == null);
+                        
+                        do
+                        {
+                            Console.WriteLine("Enter the Address");
+                            address = functionalities.ValidateAddress();
+                        }
+                        while (address == null);
+
+                        Employee result = employees.Find(x => x.employeeMail_id == employeeMail_id);
+                        if (result == null)
+                        {
+                            Employee employee = new Employee(id, employeeName, employeeMail_id, age,
+                                employeeDesignation, companyName, address);
+                            employees.Add(employee);
+                            id++;
+                        }
+                        else
+                            Console.WriteLine("Employee already exists.");
+                        break;
+
+                    case 2:
+                        functionalities.GetAllEmployee(employees);
+                        break;
+
+                    case 3:
+                        functionalities.GetEmployeeById(employees);
+                        break;
+
+                    case 4:
+                        functionalities.UpdateEmployeeRecord(employees);
+                        break;
+
+                    case 5:
+                        functionalities.DeteleEmployeeRecord(employees);
+                        break;
+
+                    default:
+                        Console.WriteLine("You have made wrong choice.");
+                        break;
+                }
+                Console.WriteLine("Press 1 to continue");
+                Int32.TryParse(Console.ReadLine(), out WantToContinue);
+            } while (WantToContinue == 1);
+            Console.WriteLine("Invalid Input Detected.\nProgram ends.");
+        }
+    }
+}
+------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Assignment4
+{
+    class Employee
+    {
+        public int age { get; set; }
+        public int id { get; }
+        public string employeeName { get; }
+        public string employeeMail_id { get; set; }
+        public string employeeDesignation { get; set; }
+        public string companyName { get; set; }
+        public string address { get; set; }
+
+        public  Employee(int id,string employeeName, string employeeMail_id, int age, string employeeDesignation, string companyName, string address)
+        {
+            this.id = id;
+            this.employeeName = employeeName;
+            this.employeeMail_id = employeeMail_id;
+            this.age = age;
+            this.employeeDesignation = employeeDesignation;
+            this.companyName = companyName;
+            this.address = address;
+        }
+    }
+}
